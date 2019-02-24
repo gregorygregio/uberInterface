@@ -21,6 +21,7 @@ export default class Directions extends Component {
                 onReady={onReady}
                 onError={(errorMessage) => {
                     console.log('GOT AN ERROR');
+                    console.log(errorMessage);
                 }}
                 apikey="AIzaSyBuI_23X2KDrJF582x-G5iDxhNOvZ0Kow8"
                 strokeWidth={3}
