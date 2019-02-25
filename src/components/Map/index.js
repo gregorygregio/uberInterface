@@ -9,18 +9,26 @@ import getPixels from '../../utils';
 import markerImage from '../../../assets/marker.png';
 import {LocationBox, LocationText, LocationTimeBox, LocationTimeText, LocationTimeTextSmall} from './styles';
 
+import Geocoder from 'react-native-geocoding';
+
+
+Geocoder.init('AIzaSyBuI_23X2KDrJF582x-G5iDxhNOvZ0Kow8');
 
 export default class Map extends Component {
     state = {
         region: null,
         destination: null,
         duration: null,
+        location: null
     }
-
 
     async componentDidMount() {
         navigator.geolocation.getCurrentPosition(
-            ({coords: {latitude, longitude}}) => {
+            async ({coords: {latitude, longitude}}) => {
+                const response = await Geocoder.from({ latitude, longitude });
+
+                const address = response.results[0].formatted_address;
+                const location = address.split(",").shift();
 
                 this.setState({
                     region: {
@@ -28,7 +36,8 @@ export default class Map extends Component {
                         longitude,
                         latitudeDelta: 0.0143,
                         longitudeDelta: 0.0134,
-                    }
+                    },
+                    location
                 });
             },
             (error) => {
@@ -64,7 +73,7 @@ export default class Map extends Component {
     };
 
     render() {
-        const { region, destination, duration } = this.state;
+        const { region, destination, duration, location } = this.state;
         console.log(region, destination);
         return (
             <View style={{ flex: 1 }}>
@@ -117,7 +126,7 @@ export default class Map extends Component {
                                         <LocationTimeText>{duration}</LocationTimeText>
                                         <LocationTimeTextSmall>MIN</LocationTimeTextSmall>
                                     </LocationTimeBox>
-                                    <LocationText>Rua antonio melato</LocationText>
+                                    <LocationText>{location}</LocationText>
                                 </LocationBox>
                             </Marker>
 
